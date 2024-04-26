@@ -1,6 +1,7 @@
 import socket
 import logging
 from threading import Thread
+from message import Message
 
 
 class Server(Thread):
@@ -32,6 +33,31 @@ class Server(Thread):
             )
             self.clients.append(client)
 
+    def send_to_all_clients(self, message: Message):
+        for client in self.clients:
+            client.connection.sendall(str(message).encode())
+
+    def send_to_client(self, client_id: int, message: Message):
+        client = self.clients[client_id]
+        client.connection.sendall(str(message).encode())
+
+    def announce(self, message: str):
+        formatted_message = f'Server: {message}'
+        message = Message.from_content("announcement", formatted_message)
+        self.send_to_all_clients(message)
+
+    def kick(self, client_id: int):
+        client = self.clients[client_id]
+        client.connection.close()
+        self.clients.remove(client)
+        self.announce(f'{client.id} has been kicked.')
+
+    def shutdown(self):
+        for client in self.clients:
+            client.connection.close()
+        self.Socket.close()
+        self.logger.info("[ ! ] Server Stopped.")
+
 
 class Connection(Thread):
 
@@ -51,4 +77,9 @@ class Connection(Thread):
                 raw_message = self.connection.recv().decode()
             except:
                 # disconnected
-                break
+                self.disconnect()
+
+    def disconnect(self):
+        self.connection.close()
+        self.server.clients.remove(self)
+        self.server.announce(f'{self.id} has disconnected.')
