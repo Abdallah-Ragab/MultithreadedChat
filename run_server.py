@@ -1,3 +1,5 @@
 from server import Server
 
-Server().start()
+server = Server()
+server.start()
+server.join()

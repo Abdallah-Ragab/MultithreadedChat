@@ -10,7 +10,7 @@ class Server(Thread):
     host = "127.0.0.1"
     port = 99
     logger = logging.getLogger()
-    logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(message)s')
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(message)s")
     # display logs in console
 
     def __init__(self, *args, **kwargs):
@@ -33,8 +33,9 @@ class Server(Thread):
             server=self,
         )
         self.clients[id] = client
+        client.start()
         self.logger.info(f"[ i ] user#{id} has joined.")
-        self.announce(f'user#{id} has joined.')
+        self.announce(f"user#{id} has joined.")
 
     def listen_for_connections(self):
         while True:
@@ -42,19 +43,22 @@ class Server(Thread):
             connection, address = self.Socket.accept()
             self.add_client(connection, address)
 
-
     def send_to_all_clients(self, message: Message):
         for client in self.clients.values():
             client.connection.sendall(str(message).encode())
-        self.logger.info(f"[ + ] Sent message to all clients. type: {message.type}, content: {message.content}")
+        self.logger.info(
+            f"[ + ] Sent message to all clients. type: {message.type}, content: {message.content}"
+        )
 
     def send_to_client(self, client_id: int, message: Message):
         client = self.clients[client_id]
         client.connection.sendall(str(message).encode())
-        self.logger.info(f"[ + ] Sent message to client {client_id}. type: {message.type}, content: {message.content}")
+        self.logger.info(
+            f"[ + ] Sent message to client {client_id}. type: {message.type}, content: {message.content}"
+        )
 
     def announce(self, message: str):
-        formatted_message = f'Server: {message}'
+        formatted_message = f"Server: {message}"
         message = Message.from_content("announcement", formatted_message)
         self.send_to_all_clients(message)
 
@@ -62,7 +66,7 @@ class Server(Thread):
         client = self.clients[client_id]
         client.connection.close()
         self.clients.remove(client)
-        self.announce(f'{client.id} has been kicked.')
+        self.announce(f"{client.id} has been kicked.")
         self.logger.info(f"[ ! ] {client.id} has been kicked.")
 
     def shutdown(self):
@@ -81,24 +85,31 @@ class Connection(Thread):
         self.server = server
         super(Connection, self).__init__(*args, **kwargs)
 
-    def run(self) -> None:
+    def run(self):
+        print("listening for messages running")
         self.listen_for_messages()
 
     def listen_for_messages(self):
         while True:
             try:
                 raw_message = self.connection.recv(1024).decode()
+                print(raw_message)
+                print("got a message")
                 message = Message.from_string(raw_message)
                 self.handle_message(message)
             except:
                 # disconnected
                 self.disconnect()
+                break
 
     def handle_message(self, message: Message):
+        self.server.logger.info(
+            f"[ + ] Received message from user#{self.id}. type: {message.type}, content: {message.content}"
+        )
         if message.type == "message":
             self.server.send_to_all_clients(message)
 
     def disconnect(self):
         self.connection.close()
         self.server.clients.remove(self)
-        self.server.announce(f'{self.id} has disconnected.')
+        self.server.announce(f"{self.id} has disconnected.")
