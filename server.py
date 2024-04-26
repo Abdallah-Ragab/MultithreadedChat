@@ -51,7 +51,6 @@ class Server(Thread):
         self.logger.info(f"[ i ] user with id #{client.id} has joined.")
 
     def remove_client(self, client_id: int):
-        print("removing client")
         client = self.clients[int(client_id)]
         self.clients.pop(int(client_id))
         if self.onclientremove:
