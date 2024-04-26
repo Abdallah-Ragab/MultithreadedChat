@@ -11,7 +11,7 @@ class Server():
     logger = logging.getLogger()
 
     def __init__(self, *args, **kwargs):
-        pass
+        self.run()
 
     def run(self, *args, **kwargs):
         self.Socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -28,6 +28,7 @@ class Server():
                 connection=connection,
                 address=address
             )
+            self.Clients.append(client)
 
 
 class Client:
