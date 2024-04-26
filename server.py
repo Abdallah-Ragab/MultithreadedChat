@@ -13,8 +13,11 @@ class Server(Thread):
     logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(message)s")
     # display logs in console
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, onclientadd=None, onclientremove=None, *args, **kwargs):
         self.clients = {}
+        self.onclientadd = onclientadd
+        self.onclientremove = onclientremove
+
         super(Server, self).__init__(*args, **kwargs)
 
     def run(self, *args, **kwargs):
@@ -34,7 +37,17 @@ class Server(Thread):
         )
         self.clients[id] = client
         client.start()
+        if self.onclientadd:
+            self.onclientadd(client)
         self.logger.info(f"[ i ] user with id #{client.id} has joined.")
+
+    def remove_client(self, client_id: int):
+        client = self.clients[client_id]
+        client.connection.close()
+        self.clients.pop(client_id)
+        if self.onclientremove:
+            self.onclientremove(client)
+        self.logger.info(f"[ - ] user with id #{client.id} has left.")
 
     def listen_for_connections(self):
         while True:
@@ -64,8 +77,7 @@ class Server(Thread):
 
     def kick(self, client_id: int):
         client = self.clients[client_id]
-        client.connection.close()
-        self.clients.remove(client)
+        self.remove_client(client_id)
         self.announce(f"{client.user_identifier} has been kicked.")
         self.logger.info(f"[ + ] {client.user_identifier} has been kicked.")
 
@@ -113,6 +125,5 @@ class Connection(Thread):
             self.server.announce(f"{self.username} has joined. Welcome!")
 
     def disconnect(self):
-        self.connection.close()
-        self.server.clients.pop(self.id)
+        self.server.remove_client(self.id)
         self.server.announce(f"{self.user_identifier} has disconnected.")
