@@ -90,10 +90,16 @@ class ChatApp(tk.Tk):
     def kick_user(self):
         selected_user_index = self.active_users_listbox.curselection()
         if selected_user_index:
-            selected_user = self.active_users_listbox.get(selected_user_index)
-            selected_user.kick()
+            selected_user_identifier = self.active_users_listbox.get(selected_user_index)
+            selected_user_id = selected_user_identifier.split("[")[1].split("]")[0]
+            self.server.kick(selected_user_id)
 
+    def exit(self):
+        if hasattr(self, "server"):
+            self.server.shutdown()
+        self.destroy()
 
 if __name__ == "__main__":
     app = ChatApp()
+    app.protocol("WM_DELETE_WINDOW", app.exit)
     app.mainloop()
