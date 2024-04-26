@@ -30,12 +30,16 @@ class Client:
     def send(self, message, msg_type="message"):
         msg = Message(msg_type=msg_type, content=message, source=self.username)
         encoded_msg = str(msg).encode()
-        self.logger.info(f"[ + ] Sent message: {message}")
+        if msg_type == "handshake":
+            self.logger.info(f"[ + ] Set username: {message}")
+        else:
+            self.logger.info(f"[ + ] Sent message: {message}")
         self.Socket.sendall(encoded_msg)
 
     def listen_for_messages(self):
         while True:
             raw_message = self.Socket.recv(1024).decode()
+            print(raw_message)
             message = Message(string=raw_message)
             if message.type in ["announcement", "message"]:
                 self.logger.info(f"[ ⇩ ] {message.display}")
