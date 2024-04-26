@@ -22,7 +22,7 @@ class LogsWidgetHandler(logging.Handler):
 class ChatApp(tk.Tk):
     def __init__(self):
         super().__init__()
-        self.title("Admin Board")
+        self.title("Hiet Chat Application - Admin panel")
         self.geometry("1400x600")
 
         # Main frame for layout
