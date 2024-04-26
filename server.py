@@ -58,6 +58,10 @@ class Server(Thread):
         message = Message(msg_type="announcement", content=message, source="Server")
         self.send_to_all_clients(message)
 
+    def send(self, message: str):
+        message = Message(msg_type="message", content=message, source="Admin")
+        self.send_to_all_clients(message)
+
     def kick(self, client_id: int):
         client = self.clients[client_id]
         client.connection.close()
