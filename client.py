@@ -46,10 +46,11 @@ class Client:
                 if self.onmessage:
                     self.onmessage(message)
             except:
-                self.disconnect()
                 break
 
     def disconnect(self):
-        self.Socket.sendall(str(Message(msg_type="disconnect", content="bye", source=self.username)).encode())
-        self.Socket.close()
-        self.logger.info("[ - ] Disconnected from server.")
+        try:
+            self.Socket.sendall(str(Message(msg_type="disconnect", content="bye", source=self.username)).encode())
+            self.Socket.close()
+        finally:
+            self.logger.info("[ - ] Disconnected from server.")
