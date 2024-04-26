@@ -9,7 +9,8 @@ class Server(Thread):
     host = "127.0.0.1"
     port = 99
     logger = logging.getLogger()
-    logger.info = print
+    logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(message)s')
+    # display logs in console
 
     def __init__(self, *args, **kwargs):
         self.clients = {}
