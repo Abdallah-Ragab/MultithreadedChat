@@ -5,15 +5,14 @@ from threading import Thread
 
 class Server(Thread):
 
-    client_connections = []
     host = "127.0.0.1"
     port = 99
     logger = logging.getLogger()
     logger.info = print
 
     def __init__(self, *args, **kwargs):
+        self.clients = []
         super(Server, self).__init__(*args, **kwargs)
-
 
     def run(self, *args, **kwargs):
         self.Socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -25,20 +24,13 @@ class Server(Thread):
         while True:
             self.Socket.listen(1)
             connection, address = self.Socket.accept()
-            client = Client(
-                id = len(self.client_connections),
-                connection=connection,
-                address=address
+            client = Connection(
+                id=len(self.clients), connection=connection, address=address
             )
-            self.client_connections.append(client)
+            self.clients.append(client)
 
-
-class Client:
-
-    def __init__(self, id, connection, address, *args, **kwargs):
-        pass
 
 class Connection(Thread):
 
-    def __init__(self, client,  *args, **kwargs):
+    def __init__(self, id, connection, address, *args, **kwargs):
         super(Connection, self).__init__(*args, **kwargs)
