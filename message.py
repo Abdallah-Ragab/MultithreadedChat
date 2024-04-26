@@ -7,14 +7,14 @@ class Message:
         self.type = msg_type
         self.content = content
 
-    @classmethod
-    def from_string(cls, string):
+    @staticmethod
+    def from_string(string):
         msg = Message(string)
         msg.type, msg.content = msg.string.split(Message.separator)
         return msg
 
-    @classmethod
-    def from_content(cls, msg_type, content):
+    @staticmethod
+    def from_content(msg_type, content):
         msg = Message(msg_type, content)
         msg.string = f"{msg.type}{Message.separator}{msg.content}"
         return msg.string
