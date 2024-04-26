@@ -41,7 +41,10 @@ class Client:
     def listen_for_messages(self):
         while True:
             raw_message = self.Socket.recv(1024).decode()
-            print(raw_message)
             message = Message(string=raw_message)
             if self.onmessage:
                 self.onmessage(message)
+
+    def disconnect(self):
+        self.Socket.close()
+        self.logger.info("[ - ] Disconnected from server.")
