@@ -48,7 +48,7 @@ class Server(Thread):
         if self.onclientremove:
             self.onclientremove(client)
         self.logger.info(f"[ - ] user with id #{client.id} has left.")
-        self.exit()
+        client._is_running = False
 
     def listen_for_connections(self):
         while True:
@@ -117,7 +117,6 @@ class Connection(Thread):
                 self.handle_message(message)
             except:
                 # disconnected
-                self.disconnect()
                 break
 
     def handle_message(self, message: Message):
@@ -132,3 +131,6 @@ class Connection(Thread):
     def disconnect(self):
         self.server.announce(f"{self.user_identifier} has disconnected.")
         self.server.remove_client(self.id)
+
+    # def kill(self):
+    #     sys.
