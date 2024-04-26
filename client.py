@@ -27,7 +27,7 @@ class Client:
     def send(self, message):
         msg = Message.from_content("message", message)
         encoded_msg = str(msg).encode()
-        self.logger.info(f"[ ⇧ ] You: {message}")
+        self.logger.info(f"[ + ] Sent message: {message}")
         self.Socket.sendall(encoded_msg)
 
     def listen_for_messages(self):
