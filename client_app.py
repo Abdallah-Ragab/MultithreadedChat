@@ -87,6 +87,8 @@ class ChatApplication:
             self.chat_history.pack(
                 side=tk.TOP, fill=tk.BOTH, expand=True, padx=5, pady=5
             )
+            # disable editing
+            self.chat_history.config(state=tk.DISABLED)
 
             self.input_frame = ttk.Frame(self.chat_frame)
             self.input_frame.pack(side=tk.BOTTOM, fill=tk.X, padx=5, pady=5)
@@ -122,6 +124,7 @@ class ChatApplication:
             tk.messagebox.showerror("Error", "Nickname cannot be empty.")
 
     def append_message(self, message):
+        self.chat_history.config(state=tk.NORMAL)
         self.chat_history.insert(tk.END, message + "\n")
         self.chat_history.tag_configure("blue", foreground="blue")
         self.chat_history.tag_configure("black", foreground="black")
@@ -129,6 +132,7 @@ class ChatApplication:
             self.chat_history.tag_add("blue", "end-2l", "end-1c")
         else:
             self.chat_history.tag_add("black", "end-2l", "end-1c")
+        self.chat_history.config(state=tk.DISABLED)
         self.chat_history.see(tk.END)
 
     def send_message(self):
