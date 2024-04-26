@@ -46,20 +46,17 @@ class Server(Thread):
     def send_to_all_clients(self, message: Message):
         for client in self.clients.values():
             client.connection.sendall(str(message).encode())
-        self.logger.info(
-            f"[ + ] Sent message to all clients. type: {message.type}, content: {message.content}"
-        )
+        self.logger.info(f"[ i ] [sent] [all] [{message.type}] {message.display}")
 
     def send_to_client(self, client_id: int, message: Message):
         client = self.clients[client_id]
         client.connection.sendall(str(message).encode())
         self.logger.info(
-            f"[ + ] Sent message to client {client_id}. type: {message.type}, content: {message.content}"
+            f"[ i ] [sent] [user#{client_id}][{message.type}] {message.display}"
         )
 
     def announce(self, message: str):
-        formatted_message = f"Server: {message}"
-        message = Message.from_content("announcement", formatted_message)
+        message = Message(msg_type="announcement", content=message, source="Server")
         self.send_to_all_clients(message)
 
     def kick(self, client_id: int):
@@ -67,7 +64,7 @@ class Server(Thread):
         client.connection.close()
         self.clients.remove(client)
         self.announce(f"{client.id} has been kicked.")
-        self.logger.info(f"[ ! ] {client.id} has been kicked.")
+        self.logger.info(f"[ + ] {client.id} has been kicked.")
 
     def shutdown(self):
         for client in self.clients:
@@ -86,16 +83,13 @@ class Connection(Thread):
         super(Connection, self).__init__(*args, **kwargs)
 
     def run(self):
-        print("listening for messages running")
         self.listen_for_messages()
 
     def listen_for_messages(self):
         while True:
             try:
-                raw_message = self.connection.recv(1024).decode()
-                print(raw_message)
-                print("got a message")
-                message = Message.from_string(raw_message)
+                msg_string = self.connection.recv(1024).decode()
+                message = Message(string=msg_string)
                 self.handle_message(message)
             except:
                 # disconnected
@@ -103,9 +97,7 @@ class Connection(Thread):
                 break
 
     def handle_message(self, message: Message):
-        self.server.logger.info(
-            f"[ + ] Received message from user#{self.id}. type: {message.type}, content: {message.content}"
-        )
+        self.server.logger.info(f"[ + ] [received] [{message.type}] {message.display}")
         if message.type == "message":
             self.server.send_to_all_clients(message)
 
