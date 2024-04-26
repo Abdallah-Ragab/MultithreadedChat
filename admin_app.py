@@ -101,6 +101,7 @@ class ChatApp(tk.Tk):
             onmessage=on_message_received,
             onclientadd=self.on_client_change,
             onclientremove=self.on_client_change,
+            onclientchange=self.on_client_change,
             log_handler=admin_app_log_handler,
         )
         self.server.start()

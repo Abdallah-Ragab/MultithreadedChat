@@ -15,12 +15,13 @@ class Server(Thread):
     # display logs in console
 
     def __init__(
-        self, onmessage=None, onclientadd=None, onclientremove=None, *args, **kwargs
+        self, onmessage=None, onclientadd=None, onclientremove=None, onclientchange=None, *args, **kwargs
     ):
         self.clients = {}
         self.onmessage = onmessage
         self.onclientadd = onclientadd
         self.onclientremove = onclientremove
+        self.onclientchange = onclientchange
 
         if "log_handler" in kwargs:
             self.logger.addHandler(kwargs["log_handler"])
@@ -137,6 +138,8 @@ class Connection(Thread):
         if message.type == "handshake":
             self.username = message.content
             self.server.announce(f"{self.username} has joined. Welcome!")
+            if self.server.onclientchange:
+                self.server.onclientchange(self)
         if message.type == "disconnect":
             self.disconnect()
 
