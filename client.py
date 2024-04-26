@@ -7,13 +7,12 @@ class Client:
 
     default_server_host = "127.0.0.1"
     default_server_port = 99
-    username = "Anonymous"
 
     logger = logging.getLogger()
     logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(message)s')
 
-    def __init__(self, *args, **kwargs):
-        pass
+    def __init__(self, username="Anonymous", *args, **kwargs):
+        self.username = username
 
     def connect(self, ip=None, port=None):
         ip = ip or self.default_server_host
