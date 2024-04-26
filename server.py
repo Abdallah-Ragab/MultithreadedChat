@@ -111,4 +111,4 @@ class Connection(Thread):
     def disconnect(self):
         self.connection.close()
         self.server.clients.pop(self.id)
-        self.server.announce(f"{self.id} has disconnected.")
+        self.server.announce(f"{self.user_identifier} has disconnected.")
