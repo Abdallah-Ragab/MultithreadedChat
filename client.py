@@ -7,12 +7,14 @@ class Client:
 
     default_server_host = "127.0.0.1"
     default_server_port = 99
+    messages = []
 
     logger = logging.getLogger()
     logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(message)s')
 
-    def __init__(self, username="Anonymous", *args, **kwargs):
+    def __init__(self, username="Anonymous", onmessage=None, *args, **kwargs):
         self.username = username
+        self.onmessage = onmessage
 
     def connect(self, ip=None, port=None):
         ip = ip or self.default_server_host
@@ -41,5 +43,5 @@ class Client:
             raw_message = self.Socket.recv(1024).decode()
             print(raw_message)
             message = Message(string=raw_message)
-            if message.type in ["announcement", "message"]:
-                self.logger.info(f"[ ⇩ ] {message.display}")
+            if self.onmessage:
+                self.onmessage(message)
