@@ -60,7 +60,7 @@ class ChatApp(tk.Tk):
         self.kick_button.pack()
 
 
-        self.server = Server()
+        self.server = Server(onclientadd=self.on_client_change, onclientremove=self.on_client_change)
         self.server.start()
 
 
@@ -73,9 +73,13 @@ class ChatApp(tk.Tk):
         self.chat_display.see(tk.END)
 
     def populate_active_users(self):
+        self.active_users_listbox.delete(0, tk.END)
         active_users = self.server.clients.values()
         for user in active_users:
             self.active_users_listbox.insert(tk.END, f'{user.username}[{user.id}]')
+
+    def on_client_change(self, client):
+        self.populate_active_users()
 
     def send_message(self):
         message = self.chat_entry.get().strip()
