@@ -13,8 +13,9 @@ class Server(Thread):
     logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(message)s")
     # display logs in console
 
-    def __init__(self, onclientadd=None, onclientremove=None, *args, **kwargs):
+    def __init__(self,  onmessage=None, onclientadd=None, onclientremove=None, *args, **kwargs):
         self.clients = {}
+        self.onmessage = onmessage
         self.onclientadd = onclientadd
         self.onclientremove = onclientremove
 
@@ -61,6 +62,8 @@ class Server(Thread):
     def send_to_all_clients(self, message: Message):
         for client in self.clients.values():
             client.connection.sendall(str(message).encode())
+        if self.onmessage:
+            self.onmessage(message)
         self.logger.info(f"[ i ] [sent] [all] [{message.type}] {message.display}")
 
     def send_to_client(self, client_id: int, message: Message):
