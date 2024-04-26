@@ -98,6 +98,7 @@ class ChatApp(tk.Tk):
         if hasattr(self, "server"):
             self.server.shutdown()
         self.destroy()
+        exit(0)
 
 if __name__ == "__main__":
     app = ChatApp()
