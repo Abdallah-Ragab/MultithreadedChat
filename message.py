@@ -2,25 +2,25 @@ class Message:
     # Message format <type>:::<content>
     separator = ":::"
 
-    def __init__(self, data = None, msg_type = None, content = None, *args, **kwargs):
-        self.data = data
+    def __init__(self, string = None, msg_type = None, content = None, *args, **kwargs):
+        self.string = string
         self.type = msg_type
         self.content = content
 
     @classmethod
-    def decode(data):
-        msg = Message(data)
-        msg.type, msg.content = msg.data.split(Message.separator)
+    def from_string(string):
+        msg = Message(string)
+        msg.type, msg.content = msg.string.split(Message.separator)
         return msg
 
     @classmethod
-    def encode(msg_type, content):
+    def from_content(msg_type, content):
         msg = Message(msg_type, content)
-        msg.data = f"{msg.type}{Message.separator}{msg.content}"
-        return msg.data
+        msg.string = f"{msg.type}{Message.separator}{msg.content}"
+        return msg.string
 
     def __str__(self):
-        return self.data
+        return self.string
 
     def __repr__(self):
-        return self.data
+        return self.string
