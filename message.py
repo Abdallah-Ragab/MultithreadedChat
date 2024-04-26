@@ -27,6 +27,7 @@ class Message:
             "source": self.source,
             "content": self.content
         }
+
     @property
     def display(self):
-        print(f"{self.source}: {self.content}")
+        return(f"{self.source}: {self.content}")
