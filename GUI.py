@@ -15,7 +15,7 @@ class ChatApplication:
 
     def __init__(self):
         self.root = tk.Tk()
-        self.root.title("Team 9's Chat Application")
+        self.root.title("HIET Chat Application")
         self.root.geometry("800x600")
 
         self.create_username_frame()
@@ -29,12 +29,12 @@ class ChatApplication:
         self.chat_icon_label.pack(pady=10)
 
         # welcome message
-        self.username_label = ttk.Label(self.username_frame, text="Welcome to", font=("Helvetica", 14))
-        self.username_label.pack(pady=10)
+        self.title = ttk.Label(self.username_frame, text="Welcome to", font=("Helvetica", 14))
+        self.title.pack(pady=10)
 
         # chat app name
-        self.username_label = ttk.Label(self.username_frame, text="Team 9's Chat Application!", font=("Helvetica", 20, "bold"))
-        self.username_label.pack(pady=20)
+        self.title = ttk.Label(self.username_frame, text="HIET Chat Application!", font=("Helvetica", 20, "bold"))
+        self.title.pack(pady=20)
 
         # username label
         self.username_label = ttk.Label(self.username_frame, text="Enter your username:", font=("Helvetica", 12))
