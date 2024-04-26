@@ -1,3 +1,3 @@
-from .server import Server
+from server import Server
 
-Server.start()
+Server().start()
