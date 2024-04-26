@@ -25,6 +25,8 @@ class Server(Thread):
 
         if "log_handler" in kwargs:
             self.logger.addHandler(kwargs["log_handler"])
+            # change format for this handler
+            kwargs["log_handler"].setFormatter(logging.Formatter("%(asctime)s - %(message)s"))
             del kwargs["log_handler"]
 
         super(Server, self).__init__(*args, **kwargs)
