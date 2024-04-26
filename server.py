@@ -20,6 +20,7 @@ class Server(Thread):
         self.Socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.Socket.bind((self.host, self.port))
         self.logger.info("[ + ] Server Started.")
+        self.logger.info(f"[ + ] Listening on {self.host}:{self.port}")
         self.listen_for_connections()
 
     def add_client(self, connection, address):
@@ -31,6 +32,8 @@ class Server(Thread):
             server=self,
         )
         self.clients[id] = client
+        self.announce(f'{id} has joined.')
+        self.logger.info(f"[ i ] {id} has joined.")
 
     def listen_for_connections(self):
         while True:
@@ -42,10 +45,12 @@ class Server(Thread):
     def send_to_all_clients(self, message: Message):
         for client in self.clients.values():
             client.connection.sendall(str(message).encode())
+        self.logger.info(f"[ + ] Sent message to all clients. type: {message.type}, content: {message.content}")
 
     def send_to_client(self, client_id: int, message: Message):
         client = self.clients[client_id]
         client.connection.sendall(str(message).encode())
+        self.logger.info(f"[ + ] Sent message to client {client_id}. type: {message.type}, content: {message.content}")
 
     def announce(self, message: str):
         formatted_message = f'Server: {message}'
@@ -57,6 +62,7 @@ class Server(Thread):
         client.connection.close()
         self.clients.remove(client)
         self.announce(f'{client.id} has been kicked.')
+        self.logger.info(f"[ ! ] {client.id} has been kicked.")
 
     def shutdown(self):
         for client in self.clients:
@@ -80,10 +86,16 @@ class Connection(Thread):
     def listen_for_messages(self):
         while True:
             try:
-                raw_message = self.connection.recv().decode()
+                raw_message = self.connection.recv(1024).decode()
+                message = Message.from_string(raw_message)
+                self.handle_message(message)
             except:
                 # disconnected
                 self.disconnect()
+
+    def handle_message(self, message: Message):
+        if message.type == "message":
+            self.server.send_to_all_clients(message)
 
     def disconnect(self):
         self.connection.close()

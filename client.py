@@ -21,8 +21,8 @@ class Client:
         self.Socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.Socket.connect((ip, port))
         self.logger.info(f"[ + ] Connected to server {ip}:{port}")
-        self.listen_for_messages()
         self.logger.info("[ i ] Listening for messages.")
+        self.listen_for_messages()
 
     def send(self, message):
         msg = Message.from_content("message", message)
