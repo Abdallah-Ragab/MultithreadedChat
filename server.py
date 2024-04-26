@@ -7,8 +7,9 @@ class Server(Thread):
 
     client_connections = []
     host = "127.0.0.1"
-    port = 8080
+    port = 99
     logger = logging.getLogger()
+    logger.info = print
 
     def __init__(self, *args, **kwargs):
         super(Server, self).__init__(*args, **kwargs)
