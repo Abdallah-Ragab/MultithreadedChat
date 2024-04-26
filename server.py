@@ -12,7 +12,7 @@ class Server(Thread):
     logger.info = print
 
     def __init__(self, *args, **kwargs):
-        self.clients = []
+        self.clients = {}
         super(Server, self).__init__(*args, **kwargs)
 
     def run(self, *args, **kwargs):
@@ -21,20 +21,25 @@ class Server(Thread):
         self.logger.info("[ + ] Server Started.")
         self.listen_for_connections()
 
+    def add_client(self, client, connection, address):
+        id = max(self.clients.keys()) + 1 if self.clients else 0
+        client = Connection(
+            id=id,
+            connection=connection,
+            address=address,
+            server=self,
+        )
+        self.clients[id] = client
+
     def listen_for_connections(self):
         while True:
             self.Socket.listen(1)
             connection, address = self.Socket.accept()
-            client = Connection(
-                id=len(self.clients),
-                connection=connection,
-                address=address,
-                server=self,
-            )
-            self.clients.append(client)
+            self.add_client(connection, address)
+
 
     def send_to_all_clients(self, message: Message):
-        for client in self.clients:
+        for client in self.clients.values():
             client.connection.sendall(str(message).encode())
 
     def send_to_client(self, client_id: int, message: Message):
