@@ -6,7 +6,6 @@ from message import Message
 from admin_app import LogsWidgetHandler
 
 
-
 class Server(Thread):
 
     host = "127.0.0.1"
@@ -15,15 +14,17 @@ class Server(Thread):
     logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(message)s")
     # display logs in console
 
-    def __init__(self,  onmessage=None, onclientadd=None, onclientremove=None, *args, **kwargs):
+    def __init__(
+        self, onmessage=None, onclientadd=None, onclientremove=None, *args, **kwargs
+    ):
         self.clients = {}
         self.onmessage = onmessage
         self.onclientadd = onclientadd
         self.onclientremove = onclientremove
 
-        if 'log_handler' in kwargs:
-            self.logger.addHandler(kwargs['log_handler'])
-            del kwargs['log_handler']
+        if "log_handler" in kwargs:
+            self.logger.addHandler(kwargs["log_handler"])
+            del kwargs["log_handler"]
 
         super(Server, self).__init__(*args, **kwargs)
 
@@ -93,8 +94,6 @@ class Server(Thread):
         client.disconnect()
         client.destroy()
 
-
-
     def shutdown(self):
         self.announce("Server is shutting down.")
         for client in self.clients.values():
@@ -112,6 +111,7 @@ class Connection(Thread):
         self.server = server
         self.username = "Anonymous"
         super(Connection, self).__init__(*args, **kwargs)
+
     @property
     def user_identifier(self):
         return f"{self.username}[{self.id}]"

@@ -10,7 +10,7 @@ class Client:
     messages = []
 
     logger = logging.getLogger()
-    logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(message)s')
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(message)s")
 
     def __init__(self, username="Anonymous", onmessage=None, *args, **kwargs):
         self.username = username
@@ -50,8 +50,13 @@ class Client:
 
     def disconnect(self):
         try:
-            self.Socket.sendall(str(Message(msg_type="disconnect", content="bye", source=self.username)).encode())
-        except: pass
+            self.Socket.sendall(
+                str(
+                    Message(msg_type="disconnect", content="bye", source=self.username)
+                ).encode()
+            )
+        except:
+            pass
         finally:
             self.Socket.shutdown(socket.SHUT_RDWR)
             self.Socket.close()

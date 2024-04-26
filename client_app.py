@@ -8,6 +8,7 @@ from client import Client
 def on_message_received(message):
     app.append_message(f"{message.source}: {message.content}")
 
+
 class ChatApplication:
 
     b_color = "#3B67B1"
@@ -29,25 +30,48 @@ class ChatApplication:
         self.chat_icon_label.pack(pady=10)
 
         # welcome message
-        self.title = ttk.Label(self.username_frame, text="Welcome to", font=("Helvetica", 14))
+        self.title = ttk.Label(
+            self.username_frame, text="Welcome to", font=("Helvetica", 14)
+        )
         self.title.pack(pady=10)
 
         # chat app name
-        self.title = ttk.Label(self.username_frame, text="HIET Chat Application!", font=("Helvetica", 20, "bold"))
+        self.title = ttk.Label(
+            self.username_frame,
+            text="HIET Chat Application!",
+            font=("Helvetica", 20, "bold"),
+        )
         self.title.pack(pady=20)
 
         # username label
-        self.username_label = ttk.Label(self.username_frame, text="Enter your username:", font=("Helvetica", 12))
+        self.username_label = ttk.Label(
+            self.username_frame, text="Enter your username:", font=("Helvetica", 12)
+        )
         self.username_label.pack(pady=5)
 
         # username entry
-        self.username_entry = ttk.Entry(self.username_frame, width=30, font=("Helvetica", 12))
+        self.username_entry = ttk.Entry(
+            self.username_frame, width=30, font=("Helvetica", 12)
+        )
         self.username_entry.pack(pady=5)
         self.username_entry.bind("<Return>", lambda event: self.create_chat_frame())
 
         # connect button
-        self.connect_button = ttk.Button(self.username_frame, text="Connect", command=self.create_chat_frame, style="C.TButton", cursor="hand2", takefocus=0, )
-        ttk.Style().configure("C.TButton", padding=0, relief="flat", background=self.b_color, foreground=self.y_color)
+        self.connect_button = ttk.Button(
+            self.username_frame,
+            text="Connect",
+            command=self.create_chat_frame,
+            style="C.TButton",
+            cursor="hand2",
+            takefocus=0,
+        )
+        ttk.Style().configure(
+            "C.TButton",
+            padding=0,
+            relief="flat",
+            background=self.b_color,
+            foreground=self.y_color,
+        )
         self.connect_button.pack(pady=5)
 
         self.username_frame.pack(fill=tk.BOTH, expand=True)
@@ -60,7 +84,9 @@ class ChatApplication:
             self.chat_frame = ttk.Frame(self.root)
 
             self.chat_history = scrolledtext.ScrolledText(self.chat_frame, wrap=tk.WORD)
-            self.chat_history.pack(side=tk.TOP, fill=tk.BOTH, expand=True, padx=5, pady=5)
+            self.chat_history.pack(
+                side=tk.TOP, fill=tk.BOTH, expand=True, padx=5, pady=5
+            )
 
             self.input_frame = ttk.Frame(self.chat_frame)
             self.input_frame.pack(side=tk.BOTTOM, fill=tk.X, padx=5, pady=5)
@@ -69,8 +95,21 @@ class ChatApplication:
             self.message_entry.pack(side=tk.LEFT, expand=True, fill=tk.X)
             self.message_entry.bind("<Return>", lambda event: self.send_message())
 
-            self.send_button = ttk.Button(self.input_frame, text="Send", command=self.send_message, style="", cursor="hand2", takefocus=0,)
-            ttk.Style().configure("blue.TButton", padding=0, relief="flat", background=self.b_color, foreground=self.y_color)
+            self.send_button = ttk.Button(
+                self.input_frame,
+                text="Send",
+                command=self.send_message,
+                style="",
+                cursor="hand2",
+                takefocus=0,
+            )
+            ttk.Style().configure(
+                "blue.TButton",
+                padding=0,
+                relief="flat",
+                background=self.b_color,
+                foreground=self.y_color,
+            )
             self.send_button.pack(side=tk.RIGHT)
 
             self.chat_frame.pack(fill=tk.BOTH, expand=True)
@@ -103,9 +142,9 @@ class ChatApplication:
             self.client.disconnect()
         self.root.destroy()
 
-
     def run(self):
         self.root.mainloop()
+
 
 if __name__ == "__main__":
     app = ChatApplication()
