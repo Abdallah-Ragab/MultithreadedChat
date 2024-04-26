@@ -25,12 +25,30 @@ class Server(Thread):
             self.Socket.listen(1)
             connection, address = self.Socket.accept()
             client = Connection(
-                id=len(self.clients), connection=connection, address=address
+                id=len(self.clients),
+                connection=connection,
+                address=address,
+                server=self,
             )
             self.clients.append(client)
 
 
 class Connection(Thread):
 
-    def __init__(self, id, connection, address, *args, **kwargs):
+    def __init__(self, id, connection, address, server, *args, **kwargs):
+        self.id = id
+        self.connection = connection
+        self.address = address
+        self.server = server
         super(Connection, self).__init__(*args, **kwargs)
+
+    def run(self) -> None:
+        self.listen_for_messages()
+
+    def listen_for_messages(self):
+        while True:
+            try:
+                raw_message = self.connection.recv().decode()
+            except:
+                # disconnected
+                break
