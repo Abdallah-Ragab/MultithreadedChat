@@ -33,8 +33,8 @@ class Server(Thread):
             server=self,
         )
         self.clients[id] = client
-        self.announce(f'{id} has joined.')
-        self.logger.info(f"[ i ] {id} has joined.")
+        self.logger.info(f"[ i ] user#{id} has joined.")
+        self.announce(f'user#{id} has joined.')
 
     def listen_for_connections(self):
         while True:
