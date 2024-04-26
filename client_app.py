@@ -101,6 +101,7 @@ class ChatApplication:
     def exit(self):
         if hasattr(self, "client"):
             self.client.disconnect()
+
         self.root.destroy()
 
 

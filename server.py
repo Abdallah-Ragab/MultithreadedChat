@@ -48,7 +48,6 @@ class Server(Thread):
         if self.onclientremove:
             self.onclientremove(client)
         self.logger.info(f"[ - ] user with id #{client.id} has left.")
-        client._is_running = False
 
     def listen_for_connections(self):
         while True:
@@ -82,8 +81,9 @@ class Server(Thread):
     def kick(self, client_id: int):
         client = self.clients[int(client_id)]
         self.announce(f"{client.user_identifier} has been kicked.")
-        self.remove_client(client_id)
         self.logger.info(f"[ + ] {client.user_identifier} has been kicked.")
+        client.destroy()
+
 
     def shutdown(self):
         self.announce("Server is shutting down.")
@@ -127,10 +127,13 @@ class Connection(Thread):
         if message.type == "handshake":
             self.username = message.content
             self.server.announce(f"{self.username} has joined. Welcome!")
+        if message.type == "disconnect":
+            self.disconnect()
 
     def disconnect(self):
         self.server.announce(f"{self.user_identifier} has disconnected.")
-        self.server.remove_client(self.id)
+        self.destroy()
 
-    # def kill(self):
-    #     sys.
+    def destroy(self):
+        self.server.remove_client(self.id)
+        self._is_running = False

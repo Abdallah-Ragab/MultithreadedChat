@@ -50,5 +50,6 @@ class Client:
                 break
 
     def disconnect(self):
+        self.Socket.sendall(str(Message(msg_type="disconnect", content="bye", source=self.username)).encode())
         self.Socket.close()
         self.logger.info("[ - ] Disconnected from server.")
