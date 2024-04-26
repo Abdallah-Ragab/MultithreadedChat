@@ -10,7 +10,7 @@ class Message:
 
         if string:
             self.type, self.source, self.content = string.split(Message.separator)
-        elif msg_type and content and source:
+        elif msg_type and content:
             self.string = f"{msg_type}{Message.separator}{source}{Message.separator}{content}"
         else:
             raise ValueError("Invalid arguments. Either pass a string or msg_type, source, and content.")
