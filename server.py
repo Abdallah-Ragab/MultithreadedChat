@@ -42,9 +42,9 @@ class Server(Thread):
         self.logger.info(f"[ i ] user with id #{client.id} has joined.")
 
     def remove_client(self, client_id: int):
-        client = self.clients[client_id]
+        client = self.clients[int(client_id)]
         client.connection.close()
-        self.clients.pop(client_id)
+        self.clients.pop(int(client_id))
         if self.onclientremove:
             self.onclientremove(client)
         self.logger.info(f"[ - ] user with id #{client.id} has left.")
@@ -61,7 +61,7 @@ class Server(Thread):
         self.logger.info(f"[ i ] [sent] [all] [{message.type}] {message.display}")
 
     def send_to_client(self, client_id: int, message: Message):
-        client = self.clients[client_id]
+        client = self.clients[int(client_id)]
         client.connection.sendall(str(message).encode())
         self.logger.info(
             f"[ i ] [sent] [{client.user_identifier}][{message.type}] {message.display}"
