@@ -34,7 +34,7 @@ class Server(Thread):
         )
         self.clients[id] = client
         client.start()
-        self.logger.info(f"[ i ] user#{id} has joined.")
+        self.logger.info(f"[ i ] {user_identifier} has joined.")
 
     def listen_for_connections(self):
         while True:
@@ -51,7 +51,7 @@ class Server(Thread):
         client = self.clients[client_id]
         client.connection.sendall(str(message).encode())
         self.logger.info(
-            f"[ i ] [sent] [user#{client_id}][{message.type}] {message.display}"
+            f"[ i ] [sent] [{client.user_identifier}][{message.type}] {message.display}"
         )
 
     def announce(self, message: str):
@@ -62,8 +62,8 @@ class Server(Thread):
         client = self.clients[client_id]
         client.connection.close()
         self.clients.remove(client)
-        self.announce(f"{client.id} has been kicked.")
-        self.logger.info(f"[ + ] {client.id} has been kicked.")
+        self.announce(f"{client.user_identifier} has been kicked.")
+        self.logger.info(f"[ + ] {client.user_identifier} has been kicked.")
 
     def shutdown(self):
         for client in self.clients:
@@ -81,6 +81,9 @@ class Connection(Thread):
         self.server = server
         self.username = "Anonymous"
         super(Connection, self).__init__(*args, **kwargs)
+    @property
+    def user_identifier(self):
+        return f"{self.username}[{self.id}]"
 
     def run(self):
         self.listen_for_messages()
@@ -99,16 +102,13 @@ class Connection(Thread):
     def handle_message(self, message: Message):
         self.server.logger.info(f"[ + ] [received] [{message.type}] {message.display}")
         if message.type == "message":
-            message.source = self.username
+            message.source = self.user_identifier
             self.server.send_to_all_clients(message)
         if message.type == "handshake":
             self.username = message.content
             self.server.announce(f"{self.username} has joined. Welcome!")
 
-
-
-
     def disconnect(self):
         self.connection.close()
-        self.server.clients.remove(self)
+        self.server.clients.pop(self.id)
         self.server.announce(f"{self.id} has disconnected.")
