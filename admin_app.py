@@ -1,5 +1,8 @@
 import tkinter as tk
+from server import Server
 
+def on_message_received(message):
+    app.append_message(f"{message.source}: {message.content}")
 class ChatApp(tk.Tk):
     def __init__(self):
         super().__init__()
@@ -25,6 +28,8 @@ class ChatApp(tk.Tk):
         # Chat input field
         self.chat_entry = tk.Entry(self.chat_display_frame)
         self.chat_entry.pack(side=tk.LEFT, fill=tk.X, expand=True)
+        self.chat_entry.bind("<Return>", lambda event: self.send_message())
+
 
         # Send button
         self.send_button = tk.Button(self.chat_display_frame, text="Send", command=self.send_message, width=10, background="#3B67B1", borderwidth=0, fg='white')
@@ -48,34 +53,41 @@ class ChatApp(tk.Tk):
         self.active_users_label.pack()
         self.active_users_listbox = tk.Listbox(self.user_menu_frame, selectmode=tk.SINGLE)
         self.active_users_listbox.pack(fill=tk.BOTH, expand=True)
-        self.populate_active_users()  # Function to populate active users
+
 
         # Kick button
         self.kick_button = tk.Button(self.user_menu_frame, text="Kick", command=self.kick_user, width=18, bg='#900', fg='white')
         self.kick_button.pack()
 
+
+        self.server = Server()
+        self.server.start()
+
+
+
+        self.populate_active_users()  # Function to populate active users
+    def append_message(self, message):
+        self.chat_display.config(state=tk.NORMAL)
+        self.chat_display.insert(tk.END, f"{message}\n")
+        self.chat_display.config(state=tk.DISABLED)
+        self.chat_display.see(tk.END)
+
     def populate_active_users(self):
-        # Dummy method to populate active users listbox
-        active_users = ["User1", "User2", "User3"]  # Replace with actual active users
+        active_users = self.server.clients.values()
         for user in active_users:
-            self.active_users_listbox.insert(tk.END, user)
+            self.active_users_listbox.insert(tk.END, f'{user.username}[{user.id}]')
 
     def send_message(self):
-        message = self.chat_entry.get()
+        message = self.chat_entry.get().strip()
         if message:
-            self.chat_display.config(state=tk.NORMAL)
-            self.chat_display.insert(tk.END, f"You: {message}\n")
-            self.chat_display.config(state=tk.DISABLED)
             self.chat_entry.delete(0, tk.END)
+            self.server.send(message)
 
     def kick_user(self):
         selected_user_index = self.active_users_listbox.curselection()
         if selected_user_index:
             selected_user = self.active_users_listbox.get(selected_user_index)
-            # Add your logic to kick the selected user
-            self.logs_display.config(state=tk.NORMAL)
-            self.logs_display.insert(tk.END, f"{selected_user} has been kicked.\n")
-            self.logs_display.config(state=tk.DISABLED)
+            selected_user.kick()
 
 
 if __name__ == "__main__":
