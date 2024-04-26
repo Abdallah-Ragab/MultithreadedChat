@@ -16,7 +16,7 @@ class Server(Thread):
 
     def run(self, *args, **kwargs):
         self.Socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.Socket.bind(self.host, self.port)
+        self.Socket.bind((self.host, self.port))
         self.logger.info("[ + ] Server Started.")
         self.listen_for_connections()
 
