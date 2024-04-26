@@ -1,12 +1,27 @@
 import tkinter as tk
-from server import Server
+import logging
 
 def on_message_received(message):
     app.append_message(f"{message.source}: {message.content}")
+
+
+class LogsWidgetHandler(logging.Handler):
+    def __init__(self, logs_display):
+        super().__init__()
+        self.logs_display = logs_display
+
+    def emit(self, record):
+        log_message = self.format(record)
+        self.logs_display.config(state=tk.NORMAL)
+        self.logs_display.insert(tk.END, f"{log_message}\n")
+        self.logs_display.config(state=tk.DISABLED)
+        self.logs_display.see(tk.END)
+
 class ChatApp(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title("Admin Board")
+        self.geometry("1400x600")
 
         # Main frame for layout
         self.main_frame = tk.Frame(self)
@@ -59,8 +74,11 @@ class ChatApp(tk.Tk):
         self.kick_button = tk.Button(self.user_menu_frame, text="Kick", command=self.kick_user, width=18, bg='#900', fg='white')
         self.kick_button.pack()
 
+        admin_app_log_handler = LogsWidgetHandler(self.logs_display)
 
-        self.server = Server(onclientadd=self.on_client_change, onclientremove=self.on_client_change)
+        from server import Server
+
+        self.server = Server(onmessage=on_message_received, onclientadd=self.on_client_change, onclientremove=self.on_client_change, log_handler=admin_app_log_handler)
         self.server.start()
 
 

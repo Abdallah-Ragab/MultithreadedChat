@@ -3,6 +3,8 @@ import logging
 import random
 from threading import Thread
 from message import Message
+from admin_app import LogsWidgetHandler
+
 
 
 class Server(Thread):
@@ -18,6 +20,10 @@ class Server(Thread):
         self.onmessage = onmessage
         self.onclientadd = onclientadd
         self.onclientremove = onclientremove
+
+        if 'log_handler' in kwargs:
+            self.logger.addHandler(kwargs['log_handler'])
+            del kwargs['log_handler']
 
         super(Server, self).__init__(*args, **kwargs)
 
