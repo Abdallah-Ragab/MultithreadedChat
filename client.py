@@ -32,5 +32,7 @@ class Client:
 
     def listen_for_messages(self):
         while True:
-            message = self.Socket.recv(1024).decode()
-            self.logger.info(f"[ i ] Received message: {message}")
+            raw_message = self.Socket.recv(1024).decode()
+            message = Message.from_string(raw_message)
+            if message.type in ["announcement", "message"]:
+                self.logger.info(f"[ i ] Received message: {message.content}")
