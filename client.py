@@ -51,6 +51,8 @@ class Client:
     def disconnect(self):
         try:
             self.Socket.sendall(str(Message(msg_type="disconnect", content="bye", source=self.username)).encode())
-            self.Socket.close()
+        except: pass
         finally:
+            self.Socket.shutdown(socket.SHUT_RDWR)
+            self.Socket.close()
             self.logger.info("[ - ] Disconnected from server.")

@@ -49,12 +49,11 @@ class Server(Thread):
         self.logger.info(f"[ i ] user with id #{client.id} has joined.")
 
     def remove_client(self, client_id: int):
+        print("removing client")
         client = self.clients[int(client_id)]
-        client.connection.close()
         self.clients.pop(int(client_id))
         if self.onclientremove:
             self.onclientremove(client)
-        self.logger.info(f"[ - ] user with id #{client.id} has left.")
 
     def listen_for_connections(self):
         while True:
@@ -91,7 +90,9 @@ class Server(Thread):
         client = self.clients[int(client_id)]
         self.announce(f"{client.user_identifier} has been kicked.")
         self.logger.info(f"[ + ] {client.user_identifier} has been kicked.")
+        client.disconnect()
         client.destroy()
+
 
 
     def shutdown(self):
@@ -141,8 +142,9 @@ class Connection(Thread):
 
     def disconnect(self):
         self.server.announce(f"{self.user_identifier} has disconnected.")
-        self.destroy()
+        self.connection.shutdown(socket.SHUT_RDWR)
+        self.connection.close()
+        self.server.remove_client(self.id)
 
     def destroy(self):
-        self.server.remove_client(self.id)
         self._is_running = False
