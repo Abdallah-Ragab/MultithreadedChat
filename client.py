@@ -21,13 +21,16 @@ class Client:
         self.Socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.Socket.connect((ip, port))
         self.logger.info(f"[ + ] Connected to server {ip}:{port}")
+        self.listen_for_messages()
+        self.logger.info("[ i ] Listening for messages.")
 
     def send(self, message):
         msg = Message.from_content("message", message)
         encoded_msg = str(msg).encode()
         self.Socket.sendall(encoded_msg)
+        self.logger.info(f"[ + ] Sent message: {message}")
 
     def listen_for_messages(self):
         while True:
             message = self.Socket.recv(1024).decode()
-            self.logger.info(f"Received message: {message}")
+            self.logger.info(f"[ i ] Received message: {message}")
