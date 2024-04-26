@@ -17,7 +17,7 @@ class Message:
     def from_content(msg_type, content):
         msg = Message(msg_type, content)
         msg.string = f"{msg.type}{Message.separator}{msg.content}"
-        return msg.string
+        return msg
 
     def __str__(self):
         return self.string
