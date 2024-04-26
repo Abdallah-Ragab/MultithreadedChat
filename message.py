@@ -8,13 +8,13 @@ class Message:
         self.content = content
 
     @classmethod
-    def from_string(string):
+    def from_string(cls, string):
         msg = Message(string)
         msg.type, msg.content = msg.string.split(Message.separator)
         return msg
 
     @classmethod
-    def from_content(msg_type, content):
+    def from_content(cls, msg_type, content):
         msg = Message(msg_type, content)
         msg.string = f"{msg.type}{Message.separator}{msg.content}"
         return msg.string
