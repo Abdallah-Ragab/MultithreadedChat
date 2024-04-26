@@ -83,7 +83,7 @@ class Server(Thread):
 
     def shutdown(self):
         self.announce("Server is shutting down.")
-        for client in self.clients:
+        for client in self.clients.values:
             client.connection.close()
         self.Socket.close()
         self.logger.info("[ ! ] Server Stopped.")
