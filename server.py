@@ -48,12 +48,16 @@ class Server(Thread):
         if self.onclientremove:
             self.onclientremove(client)
         self.logger.info(f"[ - ] user with id #{client.id} has left.")
+        self.exit()
 
     def listen_for_connections(self):
         while True:
-            self.Socket.listen(1)
-            connection, address = self.Socket.accept()
-            self.add_client(connection, address)
+            try:
+                self.Socket.listen(1)
+                connection, address = self.Socket.accept()
+                self.add_client(connection, address)
+            except:
+                break
 
     def send_to_all_clients(self, message: Message):
         for client in self.clients.values():
@@ -126,5 +130,5 @@ class Connection(Thread):
             self.server.announce(f"{self.username} has joined. Welcome!")
 
     def disconnect(self):
-        self.server.remove_client(self.id)
         self.server.announce(f"{self.user_identifier} has disconnected.")
+        self.server.remove_client(self.id)
