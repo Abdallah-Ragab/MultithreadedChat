@@ -103,7 +103,7 @@ class Connection(Thread):
             self.server.send_to_all_clients(message)
         if message.type == "handshake":
             self.username = message.content
-            self.announce(f"{self.username} has joined. Welcome!")
+            self.server.announce(f"{self.username} has joined. Welcome!")
 
 
 
