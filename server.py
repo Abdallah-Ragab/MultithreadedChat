@@ -77,11 +77,12 @@ class Server(Thread):
 
     def kick(self, client_id: int):
         client = self.clients[int(client_id)]
-        self.remove_client(client_id)
         self.announce(f"{client.user_identifier} has been kicked.")
+        self.remove_client(client_id)
         self.logger.info(f"[ + ] {client.user_identifier} has been kicked.")
 
     def shutdown(self):
+        self.announce("Server is shutting down.")
         for client in self.clients:
             client.connection.close()
         self.Socket.close()
