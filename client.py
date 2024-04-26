@@ -7,7 +7,7 @@ class Client:
 
     default_server_host = "127.0.0.1"
     default_server_port = 99
-    username = "Cletus"
+    username = "Anonymous"
 
     logger = logging.getLogger()
     logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(message)s')
@@ -23,10 +23,13 @@ class Client:
         self.Socket.connect((ip, port))
         self.logger.info(f"[ + ] Connected to server {ip}:{port}")
         self.logger.info("[ i ] Listening for messages.")
+
+        self.send(self.username, msg_type="handshake")
+
         self.listen_for_messages()
 
-    def send(self, message):
-        msg = Message(msg_type="message", content=message, source=self.username)
+    def send(self, message, msg_type="message"):
+        msg = Message(msg_type=msg_type, content=message, source=self.username)
         encoded_msg = str(msg).encode()
         self.logger.info(f"[ + ] Sent message: {message}")
         self.Socket.sendall(encoded_msg)
