@@ -7,6 +7,7 @@ class Client:
 
     default_server_host = "127.0.0.1"
     default_server_port = 99
+    username = "Cletus"
 
     logger = logging.getLogger()
     logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(message)s')
@@ -25,7 +26,7 @@ class Client:
         self.listen_for_messages()
 
     def send(self, message):
-        msg = Message.from_content("message", message)
+        msg = Message(msg_type="message", content=message, source=self.username)
         encoded_msg = str(msg).encode()
         self.logger.info(f"[ + ] Sent message: {message}")
         self.Socket.sendall(encoded_msg)
@@ -33,6 +34,6 @@ class Client:
     def listen_for_messages(self):
         while True:
             raw_message = self.Socket.recv(1024).decode()
-            message = Message.from_string(raw_message)
+            message = Message(string=raw_message)
             if message.type in ["announcement", "message"]:
-                self.logger.info(f"[ ⇩ ] {message.content}")
+                self.logger.info(f"[ ⇩ ] {message.display}")
