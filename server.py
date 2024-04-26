@@ -1,5 +1,6 @@
 import socket
 import logging
+import random
 from threading import Thread
 from message import Message
 
@@ -24,7 +25,7 @@ class Server(Thread):
         self.listen_for_connections()
 
     def add_client(self, connection, address):
-        id = max(self.clients.keys()) + 1 if self.clients else 0
+        id = random.randint(0, 10000)
         client = Connection(
             id=id,
             connection=connection,
