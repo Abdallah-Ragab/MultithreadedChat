@@ -22,7 +22,7 @@ class Server(Thread):
         self.logger.info("[ + ] Server Started.")
         self.listen_for_connections()
 
-    def add_client(self, client, connection, address):
+    def add_client(self, connection, address):
         id = max(self.clients.keys()) + 1 if self.clients else 0
         client = Connection(
             id=id,
