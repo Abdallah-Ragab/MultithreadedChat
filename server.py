@@ -35,7 +35,6 @@ class Server(Thread):
         self.clients[id] = client
         client.start()
         self.logger.info(f"[ i ] user#{id} has joined.")
-        self.announce(f"user#{id} has joined.")
 
     def listen_for_connections(self):
         while True:
@@ -80,6 +79,7 @@ class Connection(Thread):
         self.connection = connection
         self.address = address
         self.server = server
+        self.username = "Anonymous"
         super(Connection, self).__init__(*args, **kwargs)
 
     def run(self):
@@ -99,7 +99,14 @@ class Connection(Thread):
     def handle_message(self, message: Message):
         self.server.logger.info(f"[ + ] [received] [{message.type}] {message.display}")
         if message.type == "message":
+            message.source = self.username
             self.server.send_to_all_clients(message)
+        if message.type == "handshake":
+            self.username = message.content
+            self.announce(f"{self.username} has joined. Welcome!")
+
+
+
 
     def disconnect(self):
         self.connection.close()
