@@ -2,25 +2,31 @@ class Message:
     # Message format <type>:::<content>
     separator = ":::"
 
-    def __init__(self, string=None, msg_type=None, content=None, *args, **kwargs):
+    def __init__(self, string=None, msg_type=None, content=None, source=None, *args, **kwargs):
         self.string = string
         self.type = msg_type
         self.content = content
+        self.source = source
 
-    @staticmethod
-    def from_string(string):
-        msg = Message(string)
-        msg.type, msg.content = msg.string.split(Message.separator)
-        return msg
-
-    @staticmethod
-    def from_content(msg_type, content):
-        msg = Message(msg_type=msg_type, content=content)
-        msg.string = f"{msg.type}{Message.separator}{msg.content}"
-        return msg
+        if string:
+            self.type, self.source, self.content = string.split(Message.separator)
+        elif msg_type and content and source:
+            self.string = f"{msg_type}{Message.separator}{source}{Message.separator}{content}"
+        else:
+            raise ValueError("Invalid arguments. Either pass a string or msg_type, source, and content.")
 
     def __str__(self):
         return self.string
 
     def __repr__(self):
         return self.string
+
+    def __dict__(self):
+        return {
+            "type": self.type,
+            "source": self.source,
+            "content": self.content
+        }
+    @property
+    def display(self):
+        print(f"{self.source}: {self.content}")
