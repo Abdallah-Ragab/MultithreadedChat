@@ -2,7 +2,7 @@ class Message:
     # Message format <type>:::<content>
     separator = ":::"
 
-    def __init__(self, string = None, msg_type = None, content = None, *args, **kwargs):
+    def __init__(self, string=None, msg_type=None, content=None, *args, **kwargs):
         self.string = string
         self.type = msg_type
         self.content = content
@@ -15,7 +15,7 @@ class Message:
 
     @staticmethod
     def from_content(msg_type, content):
-        msg = Message(msg_type, content)
+        msg = Message(msg_type=msg_type, content=content)
         msg.string = f"{msg.type}{Message.separator}{msg.content}"
         return msg
 
