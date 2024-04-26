@@ -3,15 +3,16 @@ import logging
 from threading import Thread
 
 
-class Server():
+class Server(Thread):
 
-    Clients = []
+    client_connections = []
     host = "127.0.0.1"
     port = 8080
     logger = logging.getLogger()
 
     def __init__(self, *args, **kwargs):
-        self.run()
+        super(Server, self).__init__(*args, **kwargs)
+
 
     def run(self, *args, **kwargs):
         self.Socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -24,11 +25,11 @@ class Server():
             self.Socket.listen(1)
             connection, address = self.Socket.accept()
             client = Client(
-                id = len(self.Clients),
+                id = len(self.client_connections),
                 connection=connection,
                 address=address
             )
-            self.Clients.append(client)
+            self.client_connections.append(client)
 
 
 class Client:
