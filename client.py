@@ -7,7 +7,6 @@ class Client:
 
     default_server_host = "127.0.0.1"
     default_server_port = 99
-    messages = []
 
     logger = logging.getLogger()
     logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(message)s")

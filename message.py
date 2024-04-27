@@ -1,5 +1,5 @@
 class Message:
-    # Message format <type>:::<content>
+    # Message format <type>:::<source>:::<content>
     separator = ":::"
 
     def __init__(

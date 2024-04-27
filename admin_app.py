@@ -34,7 +34,7 @@ class ChatApp(tk.Tk):
         self.chat_display_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
         # Chat display area
-        self.chat_display = tk.Text(self.chat_display_frame)
+        self.chat_display = tk.Text(self.chat_display_frame, font=("Helvetica", 14))
         self.chat_display.pack(fill=tk.BOTH, expand=True)
         self.chat_display.config(state=tk.DISABLED)
 
@@ -43,7 +43,7 @@ class ChatApp(tk.Tk):
         self.chat_input_frame.pack(side=tk.LEFT, fill=tk.X)
 
         # Chat input field
-        self.chat_entry = tk.Entry(self.chat_display_frame)
+        self.chat_entry = tk.Entry(self.chat_display_frame, font=("Helvetica", 14))
         self.chat_entry.pack(side=tk.LEFT, fill=tk.X, expand=True)
         self.chat_entry.bind("<Return>", lambda event: self.send_message())
 
@@ -56,15 +56,16 @@ class ChatApp(tk.Tk):
             background="#3B67B1",
             borderwidth=0,
             fg="white",
+            font=("Helvetica", 14)
         )
         self.send_button.pack(side=tk.RIGHT)
 
         # Logs frame
-        self.logs_frame = tk.Frame(self.main_frame, width=150, bg="#222")
+        self.logs_frame = tk.Frame(self.main_frame, width=50, bg="#222")
         self.logs_frame.pack(side=tk.LEFT, fill=tk.Y)
 
         # Logs display area
-        self.logs_display = tk.Text(self.logs_frame, bg="#222", fg="white")
+        self.logs_display = tk.Text(self.logs_frame, bg="#222", fg="white", font=("Helvetica", 12))
         self.logs_display.pack(fill=tk.BOTH, expand=True)
         self.logs_display.config(state=tk.DISABLED)
 
@@ -74,7 +75,7 @@ class ChatApp(tk.Tk):
 
         # Active users listbox in user menu
         self.active_users_label = tk.Label(
-            self.user_menu_frame, text="Active Users", bg="lightgrey", pady=10
+            self.user_menu_frame, text="Active Users", bg="lightgrey", pady=10, font=("Helvetica", 14)
         )
         self.active_users_label.pack()
         self.active_users_listbox = tk.Listbox(
@@ -90,6 +91,7 @@ class ChatApp(tk.Tk):
             width=18,
             bg="#900",
             fg="white",
+            font=("Helvetica", 14)
         )
         self.kick_button.pack()
 
